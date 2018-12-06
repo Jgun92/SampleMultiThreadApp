@@ -1,7 +1,8 @@
 package com.mbicycle.config.request;
 
 
-import com.sun.xml.internal.messaging.saaj.util.TeeInputStream;
+
+import org.apache.commons.io.input.TeeInputStream;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
