@@ -21,7 +21,7 @@ public class Producer implements Runnable {
             while (!counter.canDecrement()) {
                 Thread.sleep(500);
             }
-            result = counter.decrement();
+            result = counter.decrement(this);
             log.info("current result is {}", result);
             if (result.equals(0)) {
                 log.info("{} get counter to to low value. Event time {}", this, System.currentTimeMillis());

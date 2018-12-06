@@ -2,6 +2,9 @@ package com.mbicycle.service;
 
 
 import com.mbicycle.jpa.CounterLogRepository;
+import com.mbicycle.model.entity.CounterLogEntity;
+import com.mbicycle.service.consumer.Consumer;
+import com.mbicycle.service.producer.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +22,16 @@ public class Counter {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
 
-    public synchronized Integer increment() {
+    public synchronized Integer increment(Consumer consumer) {
         try {
             lock.writeLock().lock();
 
             while (true) {
-                return counter.incrementAndGet();
+                int value = counter.incrementAndGet();
+                if (value == 100) {
+                    counterLogRepository.save(new CounterLogEntity(consumer,value));
+                }
+                return value;
             }
         } finally {
             lock.writeLock().unlock();
@@ -47,12 +54,15 @@ public class Counter {
 
     }
 
-    public synchronized Integer decrement() {
+    public synchronized Integer decrement(Producer producer) {
         try {
             lock.writeLock().lock();
 
             while (true) {
                 int value = counter.decrementAndGet();
+                if (value == 0) {
+                    counterLogRepository.save(new CounterLogEntity(producer,value));
+                }
                 return value;
             }
         } finally {

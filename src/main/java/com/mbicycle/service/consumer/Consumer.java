@@ -23,7 +23,7 @@ public class Consumer implements Runnable {
                 Thread.sleep(500);
 
             }
-            result = counter.increment();
+            result = (Integer) counter.increment(this);
             log.info("current result is {}", result);
             if (result.equals(100)) {
                 log.info("{} ,increment counter to to height value  {}", this, System.currentTimeMillis());
